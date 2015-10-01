@@ -1,0 +1,32 @@
+{% extends "trophystore/base.html" %}
+{% load browserid %}
+
+{% block content %}
+
+<h1>Trophy Store</h1>
+
+{% if user.is_active %}
+  <p>Current user: {{ user.email }}</p>
+    {% browserid_logout %}
+{% else %}
+    {% browserid_login %}
+{% endif %}
+
+{% if messages %}
+<ul class="messages">
+    {% for message in messages %}
+    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+    {% endfor %}
+</ul>
+{% endif %}
+
+{% if is_authorized %}
+<a href="{% url 'request' %}" class="button button-blue">Request Certificate</a>
+<a href="{% url 'display_list' %}" class="button button-blue">Approve Certificates</a>
+<a href="{% url 'deploy' %}" class="button button-blue">Deploy Certificates</a>
+{% else %}
+<p>Please login to use Trophy Store with an authorized mozilla.com email address</p>
+{% endif %}
+
+{% endblock %}
+

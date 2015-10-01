@@ -1,0 +1,24 @@
+{% extends "trophystore/base.html" %}
+
+{% block page_title %}{{ block.super }} - Request a cert{% endblock %}
+
+{% block content %}
+<h1>Request a Certificate</h1>
+
+{% if messages %}
+<ul class="messages">
+    {% for message in messages %}
+    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+    {% endfor %}
+</ul>
+{% endif %}
+
+
+<form action="{% url 'request' %}" method="post">
+    {% csrf_token %}
+    <ul>
+    {{ form.as_ul }}
+    </ul>
+    <input type="submit" value="Submit" />
+</form>
+{% endblock %}

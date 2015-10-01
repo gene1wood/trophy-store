@@ -1,0 +1,115 @@
+body {
+    font-family: 'Open Sans', sans-serif;
+    font-weight: 600;
+    /* https://www.mozilla.org/en-US/styleguide/websites/sandstone/colors/ */
+    background-color: #D7D3C8;
+    background-image: -webkit-gradient(
+      linear,
+      left bottom,
+      left top,
+      color-stop(0.19, #D7D3C8),
+      color-stop(0.6, #F6F4EC)
+    );
+
+    background-image: -moz-linear-gradient(
+      center bottom,
+      #D7D3C8 19%,
+      #F6F4EC 60%
+    );
+    background-repeat: repeat-x;
+    min-height: 800px;
+    padding-left: 30px;
+}
+h1 {
+    font-family: 'Open Sans', sans-serif;
+    font-weight: 300;
+
+}
+section, p, ul {
+    background-color: rgba(255,255,255,0.3);;
+    color: #333;
+    font-family: 'Open Sans', sans-serif;
+    font-weight: 600;
+    line-height: 1.4;
+    padding: 5px;
+    width: 600px;
+}
+li {
+    margin-left: 30px;
+}
+
+form ul {
+   list-style: none;
+   margin: 1em 0;
+   padding: 0; 
+}
+form ul li {
+   font-weight: bold;
+   margin: 0;
+   padding: 3px 10px 5px 20px;
+   border-bottom: 1px solid #ccc;
+   color: #666; 
+}
+form ul li:hover {
+   color: #000;
+   background-color: #ddd; 
+}
+
+form ul li label {
+   display: inline-block; width: 130px; text-align: right; 
+}
+
+form ul li input, form ul li textarea {
+}
+
+form ul li span.helptext {
+    display: block;
+    font-size: 75%;
+}
+
+.button{
+      position: relative;
+    color: rgba(255,255,255,1);
+    text-decoration: none;
+    font-family: 'Open Sans', sans-serif;
+    font-weight: 300;
+    font-size: 3em;
+    display: block;
+    padding: 4px;
+    margin: 100px auto;
+      min-width: 250px;
+    max-width: 35%;
+      text-align: center;
+    
+      -webkit-transition: all .2s ease;
+      -moz-transition: all .2s ease;
+      -ms-transition: all .2s ease;
+      -o-transition: all .2s ease;
+    transition: all .2s ease;
+}
+
+.button:active {
+    position: relative;
+    top: 6px;
+}
+
+.button-blue{
+    background-color: rgba(118,167,250,1);
+    -webkit-box-shadow: 0px 9px 0px rgba(66,133,244,1);
+    -moz-box-shadow: 0px 9px 0px rgba(66,133,244,1);
+    box-shadow: 0px 9px 0px rgba(66,133,244,1);
+}
+
+.button-blue:active {
+    -webkit-box-shadow: 0px 3px 0px rgba(66,133,244,1);
+    -moz-box-shadow: 0px 3px 0px rgba(66,133,244,1);
+    box-shadow: 0px 3px 0px rgba(66,133,244,1);
+}
+
+.button-blue:hover{
+    background: rgba(160,195,255,1);
+}
+
+table, th, td {
+    border: 1px solid black;
+}

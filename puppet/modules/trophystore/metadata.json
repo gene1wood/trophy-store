@@ -1,0 +1,26 @@
+{
+  "name": "mozilla-trophystore",
+  "version": "0.1.0",
+  "author": "Gene Wood",
+  "license": " MPL-2.0",
+  "summary": "Deploy an instance of Trophy Store",
+  "source": "https://github.com/gene1wood/trophystore",
+  "project_page": "https://github.com/gene1wood/trophystore",
+  "issues_url": "https://github.com/gene1wood/trophystore/issues",
+  "tags": ["certificate", "digicert", "zeus", "elb"],
+  "operatingsystem_support": [
+    {
+      "operatingsystem":"RedHat",
+      "operatingsystemrelease": [
+        "6",
+        "7"
+      ]
+    }
+  ],
+  "dependencies": [
+    { "name": "puppetlabs/stdlib", "version_requirement": ">= 4.9.0" },
+    { "name": "puppetlabs/mysql", "version_requirement": ">= 3.6.0" },
+    { "name": "puppetlabs/apache", "version_requirement": ">= 1.6.0" },
+    { "name": "treydock/scl", "version_requirement": ">= 0.0.1" }
+  ]
+}

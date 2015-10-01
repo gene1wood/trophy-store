@@ -1,0 +1,16 @@
+{% extends "trophystore/base.html" %}
+
+{% block page_title %}{{ block.super }} - Deploy certificates{% endblock %}
+
+{% block content %}
+<h1>Deploy certificates</h1>
+
+{% if messages %}
+<ul class="messages">
+    {% for message in messages %}
+    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+    {% endfor %}
+</ul>
+{% endif %}
+
+{% endblock %}

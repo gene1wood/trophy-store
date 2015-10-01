@@ -1,0 +1,47 @@
+{% extends "trophystore/base.html" %}
+
+{% block page_title %}{{ block.super }} - Certificate Requests{% endblock %}
+
+{% block content %}
+<h1>Certificate Requests</h1>
+
+{% if messages %}
+<ul class="messages">
+    {% for message in messages %}
+    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+    {% endfor %}
+</ul>
+{% endif %}
+
+<table style="border: 1px solid black;" >
+    <tr>
+        <th>Common Name</th>
+        <th>State</th>
+        <th>Edit</th>
+        <th>Approve</th>
+        <th>Reject</th>
+    </tr>
+{% for certificate in certificates %}
+    <tr>
+        <td>{{ certificate.common_name }}</td>
+        <td>{{ certificate.get_state_display }}</td>
+        <td><a href="{% url 'display_cert' certificate.id %}">Edit</a></td>
+        <td><form action="{% url 'display_list' %}" method="post">
+            <input type='hidden' name='csrfmiddlewaretoken' value='{{ csrf_token }}' />
+            <input type="submit" value="Approve" {% if certificate.state != certificate.REQUESTED %}disabled="disabled"{% endif %} />
+            <input type="hidden" name="id" value="{{ certificate.id }}" />
+            <input type="hidden" name="action" value="approve" />
+            </form>
+        </td>
+        <td><form action="{% url 'display_list' %}" method="post">
+            <input type='hidden' name='csrfmiddlewaretoken' value='{{ csrf_token }}' />
+            <input type="submit" value="Reject" {% if certificate.state != certificate.REQUESTED %}disabled="disabled"{% endif %} />
+            <input type="hidden" name="id" value="{{ certificate.id }}" />
+            <input type="hidden" name="action" value="reject" />
+            </form>
+        </td>
+    </tr>
+{% endfor %}
+</table>
+{% endblock %}
+

@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+{% load static from staticfiles %}
+{% load browserid %}
+<html LANG="{{ LANG }}" dir="{{ DIR }}">
+  <head>
+    <meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
+    <title>{% block page_title %}Trophy Store{% endblock %}</title>
+
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300,600' rel='stylesheet' type='text/css'>
+    {% browserid_css %}
+    {% block site_css %}
+      <link href="{% static 'trophystore/css/main.css' %}" rel="stylesheet">
+    {% endblock %}
+  </head>
+  <body data-mobile-cookie="{{ settings.MOBILE_COOKIE }}">
+    {% browserid_info %}
+    <div id="header">
+        <a href="{% url 'index' %}">Home</a>
+    </div>
+
+    {% block content %}{% endblock %}
+
+    <div id="footer">
+    </div>
+
+    {% block site_js %}
+      <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+      <script src="{% static 'trophystore/js/libs/jquery.cookie.js' %}"></script>
+      <script src="{% static 'trophystore/js/init.js' %}"></script>
+     {% browserid_js %}
+    {% endblock %}
+  </body>
+</html>

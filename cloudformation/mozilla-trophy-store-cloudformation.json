@@ -1,0 +1,273 @@
+{
+  "AWSTemplateFormatVersion":"2010-09-09",
+  "Description":"Mozilla Trophy Store",
+  "Parameters":{
+    "Environment":{
+      "Description":"Environment",
+      "AllowedValues":[
+        "dev",
+        "stage",
+        "prod"
+      ],
+      "Default":"dev",
+      "Type":"String"
+    },
+    "SSHKeyName":{
+      "Description":"SSH Key Name",
+      "Type":"String"
+    }
+  },
+  "Mappings":{
+        "RegionMap":{
+            "us-east-1":{
+                "Centos7x8664withUpdatesHVM":"ami-96a818fe"
+            },
+            "us-west-2":{
+                "Centos7x8664withUpdatesHVM":"ami-c7d092f7"
+            },
+            "us-west-1":{
+                "Centos7x8664withUpdatesHVM":"ami-6bcfc42e"
+            },
+            "eu-central-1":{
+                "Centos7x8664withUpdatesHVM":"ami-7cc4f661"
+            },
+            "eu-west-1":{
+                "Centos7x8664withUpdatesHVM":"ami-e4ff5c93"
+            },
+            "ap-southeast-1":{
+                "Centos7x8664withUpdatesHVM":"ami-aea582fc"
+            },
+            "ap-southeast-2":{
+                "Centos7x8664withUpdatesHVM":"ami-bd523087"
+            },
+            "ap-northeast-1":{
+                "Centos7x8664withUpdatesHVM":"ami-89634988"
+            },
+            "sa-east-1":{
+                "Centos7x8664withUpdatesHVM":"ami-bf9520a2"
+            }
+        },
+    "EnvironmentMap":{
+      "dev":{
+        "Zone":"opsec.allizom.org"
+      },
+      "stage":{
+        "Zone":"opsec.allizom.org"
+      },
+      "prod":{
+        "Zone":"opsec.mozilla.org"
+      }
+    }
+  },
+  "Resources":{
+    "TrophyStoreSecurityGroup":{
+      "Type":"AWS::EC2::SecurityGroup",
+      "Properties":{
+        "GroupDescription":"Trophy Store Server Security Group",
+        "SecurityGroupIngress":[
+          {
+            "FromPort":"443",
+            "IpProtocol":"tcp",
+            "CidrIp":"0.0.0.0/0",
+            "ToPort":"443"
+          },
+          {
+            "FromPort":"22",
+            "IpProtocol":"tcp",
+            "CidrIp":"0.0.0.0/0",
+            "ToPort":"22"
+          }
+        ],
+        "Tags":[
+          {
+            "Key":"App",
+            "Value":"trophy_store"
+          },
+          {
+            "Key":"Env",
+            "Value":{
+              "Ref":"Environment"
+            }
+          },
+          {
+            "Key":"Type",
+            "Value":"app_server"
+          },
+          {
+            "Key":"Stack",
+            "Value":{
+              "Ref":"AWS::StackName"
+            }
+          },
+          {
+            "Key":"Name",
+            "Value":"trophy_store"
+          }
+        ]
+      }
+    },
+    "TrophyStoreInstance":{
+      "Type":"AWS::EC2::Instance",
+      "Metadata":{
+        "AWS::CloudFormation::Init":{
+          "configSets":{
+            "ascending":[
+              "config1",
+              "config2",
+              "config3"
+            ]
+          },
+          "config1":{
+            "packages":{
+              "rpm":{
+                "puppetlabs-release":"http://yum.puppetlabs.com/puppetlabs-release-el-7.noarch.rpm"
+              }
+            }
+          },
+          "config2":{
+            "packages":{
+              "yum":{
+                "puppet":[
+
+                ],
+                "git":[
+
+                ]
+              }
+            }
+          },
+          "config3":{
+            "commands":{
+              "50_setup":{
+                "command":{
+                  "Fn::Join":[
+                    "\n",
+                    [
+                      "bash -c \"cat > /var/lib/hiera/common.yaml\" <<End-of-message",
+                      "---",
+                      "trophystore::db_password: `openssl rand -base64 32`",
+                      "trophystore::db_root_password: `openssl rand -base64 32`",
+                      "trophystore::hmac_secret: `openssl rand -base64 32`",
+                      "trophystore::django_secret: `openssl rand -base64 32`",
+                      "End-of-message",
+                      "mkdir /opt/src",
+                      "git clone https://github.com/gene1wood/trophy-store /opt/src 2>&1 >> /var/log/initial_cfn-init.log",
+                      "ln -v -s /opt/src/puppet/modules/trophystore /etc/puppet/modules/trophystore 2>&1 >> /var/log/initial_cfn-init.log",
+                      "puppet module install puppetlabs-stdlib 2>&1 >> /var/log/initial_cfn-init.log",
+                      "puppet module install puppetlabs-mysql 2>&1 >> /var/log/initial_cfn-init.log",
+                      "puppet module install puppetlabs-apache 2>&1 >> /var/log/initial_cfn-init.log",
+                      "puppet module install treydock-scl 2>&1 >> /var/log/initial_cfn-init.log",
+                      "puppet apply --modulepath=/etc/puppet/modules -e \"include trophystore\" 2>&1 >> /var/log/initial_cfn-init.log",
+                      ""
+                    ]
+                  ]
+                },
+                "cwd":"~"
+              }
+            }
+          }
+        }
+      },
+      "Properties":{
+        "IamInstanceProfile":"TrophyStoreInstanceProfile",
+        "ImageId":{
+          "Fn::FindInMap":[
+            "RegionMap",
+            {
+              "Ref":"AWS::Region"
+            },
+            "Centos7x8664withUpdatesHVM"
+          ]
+        },
+        "InstanceType":"m3.medium",
+        "KeyName":{
+          "Ref":"SSHKeyName"
+        },
+        "SecurityGroups":[
+          {
+            "Ref":"TrophyStoreSecurityGroup"
+          }
+        ],
+        "Tags":[
+          {
+            "Key":"App",
+            "Value":"trophy_store"
+          },
+          {
+            "Key":"Env",
+            "Value":{
+              "Ref":"Environment"
+            }
+          },
+          {
+            "Key":"Type",
+            "Value":"app_server"
+          },
+          {
+            "Key":"Stack",
+            "Value":{
+              "Ref":"AWS::StackName"
+            }
+          },
+          {
+            "Key":"Name",
+            "Value":"trophy_store"
+          }
+        ],
+        "UserData":{
+          "Fn::Base64":{
+            "Fn::Join":[
+              "",
+              [
+                "#!/bin/bash\n",
+                "/usr/bin/easy_install https://s3.amazonaws.com/cloudformation-examples/aws-cfn-bootstrap-latest.tar.gz 2>&1 >> /var/log/initial_user-data.log\n",
+                "/usr/bin/curl http://s3.amazonaws.com/ec2metadata/ec2-metadata -o /tmp/ec2-metadata 2>&1 >> /var/log/initial_user-data.log\n",
+                "/usr/bin/install --mode 755 /tmp/ec2-metadata /usr/bin/ec2-metadata && rm /tmp/ec2-metadata\n",
+                "/usr/bin/cfn-init ",
+                "         --stack ",
+                {
+                  "Ref":"AWS::StackName"
+                },
+                "         --resource TrophyStoreInstance ",
+                "         --configsets ascending ",
+                "         --region ",
+                {
+                  "Ref":"AWS::Region"
+                },
+                "         --verbose 2>&1 >> /var/log/initial_user-data.log\n",
+                "CFNSTATUS=$?\n",
+                "/usr/bin/cfn-signal --exit-code $CFNSTATUS ",
+                "  --data \"$(/usr/bin/ec2-metadata -p | awk '{ print $2 }')\" ",
+                "'",
+                {
+                  "Ref":"TrophyStoreWaitConditionHandle"
+                },
+                "'",
+                " 2>&1 >> /var/log/initial_user-data.log\n"
+              ]
+            ]
+          }
+        }
+      }
+    },
+    "TrophyStoreWaitConditionHandle":{
+      "Type":"AWS::CloudFormation::WaitConditionHandle"
+    },
+    "TrophyStoreWaitCondition":{
+      "Type":"AWS::CloudFormation::WaitCondition",
+      "DependsOn":"TrophyStoreInstance",
+      "Properties":{
+        "Handle":{
+          "Ref":"TrophyStoreWaitConditionHandle"
+        },
+        "Timeout":"900"
+      }
+    }
+  },
+  "Outputs" : {
+        "InstancePublicDNSName" : {
+            "Value" : { "Fn::GetAtt" : [ "TrophyStoreInstance", "PublicDnsName" ] },
+            "Description" : "Instance Public DNS Name"
+        }
+  }
+}

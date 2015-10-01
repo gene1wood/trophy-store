@@ -1,0 +1,9 @@
+---
+certificate_authorities:
+    digicert:
+        type: digicert
+        account_id: 012345
+        api_key: abcdefghijklmnopqrstuvwxyz012345
+users:
+  - jdoe@example.com
+  - jroe@mozilla.com

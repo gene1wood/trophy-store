@@ -1,0 +1,34 @@
+{% extends "trophystore/base.html" %}
+
+{% block page_title %}{{ super() }} - Display a cert{% endblock %}
+
+{% block content %}
+{{ browserid_info() }}
+
+<h1>Display a Certificate</h1>
+
+{% if messages %}
+<ul class="messages">
+    {% for message in messages %}
+    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+    {% endfor %}
+</ul>
+{% endif %}
+
+
+<form action="{{ url('display_cert', certificate.id) }}" method="post">
+    <!-- I don't know why csrf_token generates only the token and not the entire input element -->
+    <input type='hidden' name='csrfmiddlewaretoken' value='{{ csrf_token }}' />
+    <ul>
+    {{ form.as_ul() }}
+    </ul>
+    <input type="submit" value="Submit" />
+</form>
+
+
+{% endblock %}
+
+{% block site_js %}
+    {{ super() }}
+    {{ browserid_js() }}
+{% endblock %}
