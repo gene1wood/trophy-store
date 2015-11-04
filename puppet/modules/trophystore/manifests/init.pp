@@ -12,6 +12,9 @@
 # [*db_user*]
 #   The MySQL database user username. Default : `trophystore_user`
 #
+# [*db_root_password*]
+#   The MySQL database root user password.
+#
 # [*hmac_secret*]
 #   A secrete value to enable HMAC signatures and should be a unique
 #   unpredictable value. https://pypi.python.org/pypi/djangohmac
@@ -63,6 +66,7 @@
 class trophystore (
         $db_password = undef,
         $db_user = 'trophystore_user',
+        $db_root_password = undef,
         $hmac_secret = undef,
         $django_secret = undef,
         $ssl_cert_content = undef,

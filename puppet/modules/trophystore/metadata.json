@@ -1,6 +1,6 @@
 {
   "name": "mozilla-trophystore",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "author": "Gene Wood",
   "license": " MPL-2.0",
   "summary": "Deploy an instance of Trophy Store",

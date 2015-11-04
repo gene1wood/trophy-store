@@ -1,4 +1,11 @@
 ---
+destinations: 
+  zlb1.example.com: 
+    type: stingray
+    hostname: zlb1.example.com
+    username: trophystore
+    password: "my_ZLB_passw0rd"
+    description: zlb1.example.com
 certificate_authorities:
     digicert:
         type: digicert
